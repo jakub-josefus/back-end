@@ -40,8 +40,12 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/clients",
-      "publishAllPorts": true
+      "launchUrl": "http://localhost:5000/clients",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Staging",
+        "ConnectionStrings:DevConnection": "Host=localhost;Port=5432;Database=clients;Username=postgres;Password=password"
+      },
+      "httpPort": 5000
     }
   }
 }

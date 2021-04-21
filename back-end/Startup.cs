@@ -9,11 +9,13 @@ namespace back_end
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            this.env = env;
         }
 
+        public IWebHostEnvironment env { get; }
         public IConfiguration Configuration { get; }
 
 
@@ -33,9 +35,23 @@ namespace back_end
                 });
             });
 
-            services.AddDbContext<AppDbContext>(
-               options => options.UseSqlServer(Configuration.GetConnectionString("AppDbContext"))
-               );
+
+
+            if (env.IsDevelopment())   //web a mssql local
+            {
+                services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDatabase")));
+            }
+            if (env.IsStaging())   //docker a postgresql
+            {
+                services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DevConnection")));
+            }
+
+
+
+
+            //services.AddDbContext<AppDbContext>(
+            //   options => options.UseSqlServer(Configuration.GetConnectionString("AppDbContext"))
+            //   );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
